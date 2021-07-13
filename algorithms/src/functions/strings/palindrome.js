@@ -7,7 +7,7 @@ export const isValidPalindromeTwoOut = (str) => {
 
     //Initialize left/right pointers at start and end of string 
     let left= 0;
-    let right = s.length -1;
+    let right = str.length -1;
 
     // Loop through string characters while comparing them, then move the pointers closer to the center
     while (left < right) {
@@ -15,7 +15,7 @@ export const isValidPalindromeTwoOut = (str) => {
             return false
         }
 
-        leftt++;
+        left++;
         right--;
     }
 }
@@ -60,6 +60,37 @@ export const isValidPalindromeCompare = function(s) {
 };
 
 
-export const almostPalindrome = (str) => {
-    
-}
+
+// Complexity
+// Time = O(n)
+// Space = O(1)
+const validSubPalindrome = (str, left, right) => {
+    while (left < right) {
+        if (str[left] !== str[right]) {
+            return false;
+        }
+
+        left++;
+        right--;
+    }
+
+    return true;
+};
+
+export const isAlmostPalindrome = (str) => {
+    let left = 0;
+    let right = str.length - 1;
+
+    while (left < right) {
+        if(str[left] !== str[right]) {
+            // add to left or subtract from right to simulate skipping the char
+            return validSubPalindrome(str, left + 1, right) || validSubPalindrome(str, left, right - 1);
+        }
+
+        left++;
+        right--;
+    }
+    return true;
+};
+
+
