@@ -6,6 +6,9 @@
 // - Return null and the node back respectively. 
 
 
+// Complexity
+// Space = O(1) 
+// Time = O(n)
 const reverseLInkedList = (head) => {
     let prev = null;
     let current = head;
