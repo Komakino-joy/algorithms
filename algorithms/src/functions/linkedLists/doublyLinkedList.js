@@ -21,7 +21,10 @@ class ListNode {
 //*     1--2--7--8--10--11--9--3--4--5--12--13--6
 
 
-const flatten = (head) => {
+// Complexity
+// Space: O(1)
+// TIme: O(n)
+export const flatten = (head) => {
     if (!head) {
         return head;
     }
@@ -33,9 +36,11 @@ const flatten = (head) => {
             currentNode = currentNode.next;
         } else {
             let tail = currentNode.child;
+
             while (tail.next !== null) {
                 tail = tail.next;
             }
+
             tail.next = currentNode.next;
 
             if (tail.next !== null) {
