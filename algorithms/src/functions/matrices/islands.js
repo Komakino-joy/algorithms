@@ -48,7 +48,7 @@ const numberOfIslands = function(matrix) {
                         const nextRow = currentRow + currentDir[0];
                         const nextCol = currentCol + currentDir[1];
 
-                        if(nextRow < 0 || nextRow >= matrix.length || nextCol < 0 || nextCol >= matrix.length) {
+                        if(nextRow < 0 || nextRow >= matrix.length || nextCol < 0 || nextCol >= matrix[0].length) {
                             continue;
                         }
 
