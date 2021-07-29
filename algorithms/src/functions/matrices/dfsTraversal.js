@@ -1,8 +1,6 @@
 const myMatrx= [
     [  1,  2,  3, 4,   5],
     [  6,  7,  8, 9,  10],
-    [ 11, 12, 13, 14, 15],
-    [ 16, 17, 18, 19, 20]
 ]
 
 const directions = [
@@ -39,5 +37,4 @@ const dfs = (matrix, row, col, seen, values) => {
        dfs(matrix, row + currentDir[0], col + currentDir[1], seen, values);
    }
    
-   console.log(values)
 }
