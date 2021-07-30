@@ -1,0 +1,18 @@
+.grid-options {
+  display: flex;
+  flex-direction: column;
+}
+
+.matrix-input {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+.grid-input {
+  width: 30px;
+  margin: 5px;
+  text-align: center;
+}

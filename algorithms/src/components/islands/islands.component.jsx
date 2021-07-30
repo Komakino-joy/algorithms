@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
 
+import MatrixInput from './matrix-input.component';
+
 import './islands.styles.css';
 
 const Islands = () => {
 
+    const originalMatrix =         
+    [[1, 1, 1, 1, 0],
+    [1, 1, 0, 1, 0],
+    [1, 1, 0, 0, 0],
+    [1, 1, 0, 0, 0],
+    [1, 1, 0, 0, 0],
+    [0, 0, 0, 1, 1]]
 
-    const [matrix, setMatrix] = useState(
-        [[1, 1, 1, 1, 0],
-        [1, 1, 0, 1, 0],
-        [1, 1, 0, 0, 1],
-        [0, 0, 0, 1, 1]]
-    )        
-
-    let [totalIslands, setTotalIslands] = useState(0);
+    const [totalIslands, setTotalIslands] = useState(0);
+    const [matrix, setMatrix] = useState(originalMatrix);   
+    const [searchCompleted, setSearchCompleted] = useState(false);   
 
     const directions = {
         0:{
@@ -40,13 +44,17 @@ const Islands = () => {
 
     const updateMatrix = async(matrix, row, col) => {
         const copyOfMatrix = [...matrix];
-        await sleep(100);
+        await sleep(200);
+
         copyOfMatrix[row][col] = 0;
-        // console.log(matrix[0])
-        // console.log(matrix[1])
-        // console.log(matrix[2])
-        // console.log(matrix[3])
+
         setMatrix(copyOfMatrix)
+    }
+
+
+    const resetMatrix = async() => {
+        setMatrix(originalMatrix);
+        setSearchCompleted(false);
     }
 
     const numOfIslands = async () => {
@@ -57,62 +65,86 @@ const Islands = () => {
         }
       
         for (let row = 0; row < matrix.length; row++) {
-      
           for (let col=0; col < matrix[0].length; col++) {
       
             if (matrix[row][col] === 1) {
-              islands++;
+                islands++;
+                
+                await updateMatrix(matrix, row, col);
+                console.log(`island found at: ${row},${col}`)
               
-              await updateMatrix(matrix, row, col);
-              
-              const queue = [];
-              queue.push([row,col]);
-      
-              while (queue.length) {
-                const currentPos = queue.shift();
-                const currentRow = currentPos[0]
-                const currentCol = currentPos[1]
-   
-      
-                for (let i = 0; i < Object.keys(directions).length; i++) {
-                  const currentDir = directions[i].coordinates;
-                  console.log(directions[i].direction)
-                  const nextRow = currentRow + currentDir[0];
-                  const nextCol = currentCol + currentDir[1];
-      
-                  if (nextRow < 0 || nextRow >= matrix.length || nextCol < 0 || nextCol >= matrix[0].length) {
-                    continue
-                  }
-      
-                  if (matrix[nextRow][nextCol] === 1) {
-                    queue.push([nextRow, nextCol]);
-                    await updateMatrix(matrix, nextRow, nextCol);
-                  }
+                const queue = [];
+                queue.push([row,col]);
+
+                while (queue.length) {
+                    const currentPos = queue.shift();
+                    const currentRow = currentPos[0]
+                    const currentCol = currentPos[1]
+                        
+                    for (let i = 0; i < Object.keys(directions).length; i++) {
+
+                    const currentDir = directions[i].coordinates;
+                    const nextRow = currentRow + currentDir[0];
+                    const nextCol = currentCol + currentDir[1];
+                     
+                    if (nextRow < 0 || nextRow >= matrix.length || nextCol < 0 || nextCol >= matrix[0].length) {
+                        continue
+                    }
+        
+                    if (matrix[nextRow][nextCol] === 1) {
+                        queue.push([nextRow, nextCol]);
+                        await updateMatrix(matrix, nextRow, nextCol);
+                    }
                 }
               }
             }
           }
         }
         setTotalIslands(islands);
+        setSearchCompleted(true);
       }
       
     return (
+        <div className='islands-page'>
+        <div className='matrix-input-container'>
+            <MatrixInput/>
+        </div>
         <div className='islands-container'>
+            <div className='island-btn-container'>
+                <button className='island-btn' onClick={() => numOfIslands(matrix)} >Find Islands</button>
+                <button className='island-btn' onClick={resetMatrix} >Reset</button>
+            </div>
             <div className='matrix-container'>
                 {matrix &&
-                    matrix.map((row, idx) => (
-                        row.map((col, idx) => (
-                            <div key={idx} className={`${col === 0 ? 'water' : 'land'} matrix-square`}>{col}</div>
+                    matrix.map((row, rowIdx) => (
+                        row.map((col, colIdx) => (
+                            <div 
+                                key={colIdx} 
+                                className={`${col === 0 ? 'water' : 'land'} matrix-square`}
+                                style={{width:`${500 / matrix[0].length}px`, height:`${500 / matrix.length}px` }}>
+                                {col}
+                            </div>
                         ))
                     ))
                 }
             </div>
-            <button onClick={() => numOfIslands(matrix)} >Find Islands</button>
-            <button onClick={() => console.log(matrix)} >My Matrix</button>
-            <p>There are {totalIslands} islands on this map.</p>
-                
-            </div>
+            {searchCompleted &&
+                <p className='island-results' >{totalIslands === 1 ? 'There was 1 island' : `There were ${totalIslands} islands`} on this map.</p>
+            }
+        </div>
+        </div>
     )
 }
 
 export default Islands
+
+
+
+
+
+
+
+
+
+
+
