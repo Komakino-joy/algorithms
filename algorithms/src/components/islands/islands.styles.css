@@ -8,6 +8,26 @@
   width: 40vw;
 }
 
+.grid-options {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 40px;
+}
+
+.matrix-input {
+  position: absolute;
+  top: 100px;
+  left: 50px;
+  display: flex;
+  flex-direction: column;
+}
+
+.grid-input {
+  width: 30px;
+  margin: 5px;
+  text-align: center;
+}
+
 .islands-container {
   height: 100vh;
   width: 60vw;

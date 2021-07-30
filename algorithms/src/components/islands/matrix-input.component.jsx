@@ -4,18 +4,14 @@ import './matrix-input.styles.css'
 
 const MatrixInput = () => {
 
-    const [numRows, setNumRows] = useState(5)
-    const [numCols, setNumCols] = useState(5)
+    const [numRows, setNumRows] = useState(0)
+    const [numCols, setNumCols] = useState(0)
 
-    const [grid, setGrid] = useState(Array(numRows).fill(Array(numCols).fill(0)))
+    const [grid, setGrid] = useState(null)
 
 
-    const updateGrid = (e) => {
-        e.preventDefault();
-
-        const newGrid = Array(numRows).fill(Array(numCols).fill(0));
-        console.log(newGrid)
-        setGrid(newGrid)
+    const updateGrid = (rows, cols) => {
+        setGrid(Array(+rows).fill(Array(+cols).fill(0)))
     }
     return (
         <div className='matrix-input'>
@@ -24,7 +20,7 @@ const MatrixInput = () => {
                 <input type="number" onChange={(e) => setNumRows(e.target.value)}/>
                 <label>Number of colums:</label>
                 <input type="number" onChange={(e) => setNumCols(e.target.value)} />
-                <button onClick={(e) => updateGrid(e)} >Submit</button>
+                <button className="dims-btn" onClick={(e) => updateGrid(numRows, numCols)} >Submit Dims</button>
             </div>
 
             { grid &&

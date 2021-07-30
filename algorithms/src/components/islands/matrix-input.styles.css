@@ -1,12 +1,13 @@
 .grid-options {
   display: flex;
   flex-direction: column;
+  margin-bottom: 40px;
 }
 
 .matrix-input {
   position: absolute;
-  top: 40px;
-  left: 40px;
+  top: 100px;
+  left: 50px;
   display: flex;
   flex-direction: column;
 }

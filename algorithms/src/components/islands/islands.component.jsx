@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 
-import MatrixInput from './matrix-input.component';
-
 import './islands.styles.css';
 
 const Islands = () => {
@@ -17,6 +15,27 @@ const Islands = () => {
     const [totalIslands, setTotalIslands] = useState(0);
     const [matrix, setMatrix] = useState(originalMatrix);   
     const [searchCompleted, setSearchCompleted] = useState(false);   
+
+    const [numRows, setNumRows] = useState(0)
+    const [numCols, setNumCols] = useState(0)
+    const [grid, setGrid] = useState(null)
+
+
+    const createGrid = (rows, cols) => {
+        setGrid(Array(+rows).fill(Array(+cols).fill(0)))
+    }
+
+    const updateGrid = (e, grid, row, col) => {
+        e.preventDefault();
+        console.log(grid)
+        console.log(row)
+        console.log(col)
+        console.log(e.target.value)
+        const copyOfGrid = [...grid];
+        console.log(copyOfGrid)
+        copyOfGrid[row][col] = Number(e.target.value);
+        setGrid(copyOfGrid);
+    }
 
     const directions = {
         0:{
@@ -102,13 +121,44 @@ const Islands = () => {
         }
         setTotalIslands(islands);
         setSearchCompleted(true);
-      }
+    }
       
     return (
         <div className='islands-page'>
+
         <div className='matrix-input-container'>
-            <MatrixInput/>
+            <div className='matrix-input'>
+                <div className='grid-options'>
+                    <label>Number of rows:</label>
+                    <input type="number" onChange={(e) => setNumRows(e.target.value)}/>
+                    <label>Number of colums:</label>
+                    <input type="number" onChange={(e) => setNumCols(e.target.value)} />
+                    <button className="dims-btn" onClick={(e) => createGrid(numRows, numCols)} >Submit Dims</button>
+                </div>
+
+                { grid &&
+                    grid.map((row, rowIdx) => (
+                        <div key={rowIdx} className='row'> 
+                            { row.map((col, colIdx) => (
+                                <input 
+                                    key={colIdx} 
+                                    type="number" 
+                                    min='0' max='1' 
+                                    // placeholder={col}
+                                    className='grid-input'
+                                    onInput={ (e) => updateGrid(e, grid, rowIdx, colIdx)} 
+                                />
+                            ))}
+                        </div>
+                    ))
+                }
+
+                <button onClick={() => setMatrix(grid)} >Create Grid</button>
+                <button onClick={() => console.log(grid)} >log grid</button>
+  
+            </div>
         </div>
+
         <div className='islands-container'>
             <div className='island-btn-container'>
                 <button className='island-btn' onClick={() => numOfIslands(matrix)} >Find Islands</button>
