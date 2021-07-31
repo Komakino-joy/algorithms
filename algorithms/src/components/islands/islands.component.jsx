@@ -22,7 +22,7 @@ const Islands = () => {
 
 
     const createGrid = (rows, cols) => {
-        setGrid(Array(+rows).fill(Array(+cols).fill(0)))
+        setGrid(Array.from({length: +rows}, e => Array(+cols).fill(0)))
     }
 
     const updateGrid = (e, grid, row, col) => {
@@ -144,7 +144,7 @@ const Islands = () => {
                                     key={colIdx} 
                                     type="number" 
                                     min='0' max='1' 
-                                    // placeholder={col}
+                                    placeholder={col}
                                     className='grid-input'
                                     onInput={ (e) => updateGrid(e, grid, rowIdx, colIdx)} 
                                 />
