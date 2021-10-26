@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import './islands.styles.css';
+import Square from './Square';
 
 const Islands = () => {
 
@@ -19,7 +20,6 @@ const Islands = () => {
     const [numRows, setNumRows] = useState(0)
     const [numCols, setNumCols] = useState(0)
     const [grid, setGrid] = useState(null)
-
 
     const createGrid = (rows, cols) => {
         setGrid(Array.from({length: +rows}, e => Array(+cols).fill(0)))
@@ -58,7 +58,7 @@ const Islands = () => {
 
     const updateMatrix = async(matrix, row, col) => {
         const copyOfMatrix = [...matrix];
-        await sleep(200);
+        await sleep(1500);
 
         copyOfMatrix[row][col] = 0;
 
@@ -69,6 +69,19 @@ const Islands = () => {
     const resetMatrix = async() => {
         setMatrix(originalMatrix);
         setSearchCompleted(false);
+    }
+
+    const [ currentRow, setRow] = useState(null);
+    const [ currentCol, setCol] = useState(null);
+    const [ arrowDir, setArrowDir ] = useState(null)
+
+    async function updateRowAndCol(row, col) {
+        setRow(row);
+        setCol(col);
+    }
+
+    async function updateArrowDir(direction) {
+        setArrowDir(direction);
     }
 
     const numOfIslands = async () => {
@@ -85,21 +98,23 @@ const Islands = () => {
                 islands++;
                 
                 await updateMatrix(matrix, row, col);
-                console.log(`island found at: ${row},${col}`)
               
                 const queue = [];
                 queue.push([row,col]);
 
                 while (queue.length) {
                     const currentPos = queue.shift();
-                    const currentRow = currentPos[0]
-                    const currentCol = currentPos[1]
+
+                    // Updating state of row and column
+                    await updateRowAndCol(currentPos[0], currentPos[1])
                         
                     for (let i = 0; i < Object.keys(directions).length; i++) {
+                    await updateArrowDir(directions[i].direction);
+                    await sleep(1500);
 
                     const currentDir = directions[i].coordinates;
-                    const nextRow = currentRow + currentDir[0];
-                    const nextCol = currentCol + currentDir[1];
+                    const nextRow = currentPos[0] + currentDir[0];
+                    const nextCol = currentPos[1] + currentDir[1];
                      
                     if (nextRow < 0 || nextRow >= matrix.length || nextCol < 0 || nextCol >= matrix[0].length) {
                         continue
@@ -139,7 +154,7 @@ const Islands = () => {
                 </div>
                 <div className='grid-input-container'>
                     { grid &&
-                        grid.map((row, rowIdx) => (
+                        grid.map((row, rowIdx) => (                            
                             <div key={rowIdx} className='row'> 
                                 { row.map((col, colIdx) => (
                                     <input 
@@ -167,12 +182,19 @@ const Islands = () => {
                 {matrix &&
                     matrix.map((row, rowIdx) => (
                         row.map((col, colIdx) => (
-                            <div 
-                                key={colIdx} 
-                                className={`${col === 0 ? 'water' : 'land'} matrix-square`}
-                                style={{width:`${500 / matrix[0].length}px`, height:`${500 / matrix.length}px` }}>
-                                {col}
-                            </div>
+
+                            <Square
+                                key={colIdx}
+                                col={col}
+                                grid={grid}
+                                rowIdx={rowIdx}
+                                colIdx={colIdx}
+                                updateGrid={updateGrid}
+                                matrix={matrix}
+                                currentRow={currentRow}
+                                currentCol={currentCol}
+                                arrowDir={arrowDir}
+                            >{col}</Square>
                         ))
                     ))
                 }
