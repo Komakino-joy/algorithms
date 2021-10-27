@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 
+import MatrixInput from './matrix-input/matrix-input.component';
+import Square from './island-square/Square';
+
 import './islands.styles.css';
-import Square from './Square';
 
 const Islands = () => {
 
@@ -16,14 +18,11 @@ const Islands = () => {
     const [totalIslands, setTotalIslands] = useState(0);
     const [matrix, setMatrix] = useState(originalMatrix);   
     const [searchCompleted, setSearchCompleted] = useState(false);   
-
-    const [numRows, setNumRows] = useState(0)
-    const [numCols, setNumCols] = useState(0)
     const [grid, setGrid] = useState(null)
 
-    const createGrid = (rows, cols) => {
-        setGrid(Array.from({length: +rows}, e => Array(+cols).fill(0)))
-    }
+    const [ currentRow, setRow] = useState(null);
+    const [ currentCol, setCol] = useState(null);
+    const [ arrowDir, setArrowDir ] = useState(null)
 
     const updateGrid = (e, grid, row, col) => {
         e.preventDefault();
@@ -70,10 +69,6 @@ const Islands = () => {
         setMatrix(originalMatrix);
         setSearchCompleted(false);
     }
-
-    const [ currentRow, setRow] = useState(null);
-    const [ currentCol, setCol] = useState(null);
-    const [ arrowDir, setArrowDir ] = useState(null)
 
     async function updateRowAndCol(row, col) {
         setRow(row);
@@ -133,76 +128,56 @@ const Islands = () => {
         setSearchCompleted(true);
     }
       
-    return (
-        <div className='islands-page'>
+      return (
+          <div className='island-page'>
 
-        <div className='matrix-input-container'>
-            <div className='matrix-input'>
-                <div className='grid-options'>
-                    <div className='section'>
-                        <label>Rows:</label>
-                        <input type="number" onChange={(e) => setNumRows(e.target.value)} min='0' max='10'/>
-                    </div>
-                    <div className='section'>
-                        <label>Columns:</label>
-                        <input type="number" onChange={(e) => setNumCols(e.target.value)} min='0' max='10'/>
-                    </div>
-                    <button className="dims-btn" onClick={(e) => createGrid(numRows, numCols)} >Submit</button>
-                    { grid &&
-                    <button className='create-btn' onClick={() => setMatrix(grid)} >Generate Grid</button>
-                    }
+            <div className="grid-builder">
+                <MatrixInput  
+                    grid={grid} 
+                    updateGrid={updateGrid}
+                    setGrid={setGrid} 
+                    setMatrix={setMatrix}
+                />
+            </div>
+
+          <div className="island-visualizer">
+
+                <div className='island-btn-container'>
+                    <button className='island-btn' onClick={() => numOfIslands(matrix)} >Find Islands</button>
+                    <button className='island-btn' onClick={resetMatrix} >Reset</button>
                 </div>
-                <div className='grid-input-container'>
-                    { grid &&
-                        grid.map((row, rowIdx) => (                            
-                            <div key={rowIdx} className='row'> 
-                                { row.map((col, colIdx) => (
-                                    <input 
-                                        key={colIdx} 
-                                        type="number" 
-                                        min='0' max='1' 
-                                        placeholder={col}
-                                        className='grid-input'
-                                        onInput={ (e) => updateGrid(e, grid, rowIdx, colIdx)} 
-                                    />
-                                ))}
-                            </div>
+
+                <div className='matrix-container'>
+                    {matrix &&
+                        matrix.map((row, rowIdx) => (
+                            row.map((col, colIdx) => (
+                                <Square
+                                    key={colIdx}
+                                    col={col}
+                                    grid={grid}
+                                    rowIdx={rowIdx}
+                                    colIdx={colIdx}
+                                    updateGrid={updateGrid}
+                                    matrix={matrix}
+                                    currentRow={currentRow}
+                                    currentCol={currentCol}
+                                    arrowDir={arrowDir}
+                                >
+                                {col}
+                                </Square>
+                            ))
                         ))
                     }
                 </div>
-            </div>
-        </div>
 
-        <div className='islands-container'>
-            <div className='island-btn-container'>
-                <button className='island-btn' onClick={() => numOfIslands(matrix)} >Find Islands</button>
-                <button className='island-btn' onClick={resetMatrix} >Reset</button>
-            </div>
-            <div className='matrix-container'>
-                {matrix &&
-                    matrix.map((row, rowIdx) => (
-                        row.map((col, colIdx) => (
-
-                            <Square
-                                key={colIdx}
-                                col={col}
-                                grid={grid}
-                                rowIdx={rowIdx}
-                                colIdx={colIdx}
-                                updateGrid={updateGrid}
-                                matrix={matrix}
-                                currentRow={currentRow}
-                                currentCol={currentCol}
-                                arrowDir={arrowDir}
-                            >{col}</Square>
-                        ))
-                    ))
+                {searchCompleted &&
+                    <p className='island-results' >
+                        { totalIslands === 1 ? 'There was 1 island' 
+                        :`There were ${totalIslands} islands` } on this map.
+                    </p>
                 }
-            </div>
-            {searchCompleted &&
-                <p className='island-results' >{totalIslands === 1 ? 'There was 1 island' : `There were ${totalIslands} islands`} on this map.</p>
-            }
-        </div>
+
+          </div>
         </div>
     )
 }
