@@ -34,19 +34,19 @@ const Islands = () => {
     const directions = {
         0:{
             coordinates:[-1, 0],
-            direction: 'left',
+            direction: 'LEFT',
         },
         1:{
             coordinates:[0,  1],
-            direction: 'up',
+            direction: 'UP',
         },
         2:{
             coordinates:[1,  0],
-            direction: 'right',
+            direction: 'RIGHT',
         },
         3:{
             coordinates:[0, -1],
-            direction: 'down',
+            direction: 'DOWN',
         },
     }
     
